@@ -1,0 +1,26 @@
+## .NET build output
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+*.userprefs
+
+
+## IDE
+.vs/
+.idea/
+*.swp
+
+## Publish output
+publish/
+out/
+out_*/
+
+## OS
+Thumbs.db
+desktop.ini
+
+## Debug symbols for Release artifacts (DebugType=none in Release)
+*.pdb

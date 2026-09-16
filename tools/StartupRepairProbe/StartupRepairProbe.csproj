@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>StartupRepairProbe</AssemblyName>
+    <RootNamespace>StartupRepairProbe</RootNamespace>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!-- 只编 Program.cs 与下面显式 Link 的真实源文件，不参与默认通配 -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <!--
+      编入仓库里**真实的那份** StartupPathRepair.cs（不是副本）。
+      用副本会随 src/ 的修改而漂移，探针就会开始验证一份不存在的代码。
+      这个手法同时让 internal 的 StartupPathRepair 在探针程序集内可见，
+      因此仓库不需要为探针加 InternalsVisibleTo。
+    -->
+    <Compile Include="..\..\src\QrScan\StartupPathRepair.cs" Link="StartupPathRepair.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- IStartupManager / StartupManager 来自这里。接缝本身不依赖任何 UI 类型。 -->
+    <ProjectReference Include="..\..\src\QrScan.Core\QrScan.Core.csproj" />
+  </ItemGroup>
+
+</Project>

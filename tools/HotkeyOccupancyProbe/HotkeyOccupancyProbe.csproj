@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>HotkeyOccupancyProbe</AssemblyName>
+    <RootNamespace>HotkeyOccupancyProbe</RootNamespace>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!-- 只编 Program.cs 与下面显式 Link 的真实源文件，不参与默认通配 -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <!--
+      编入仓库里**真实的那份** User32.cs（不是副本），复用 QrScan 自己用的
+      RegisterHotKey 声明，而不是在这里另抄一份。声明一旦漂移，本工具占用的
+      热键就可能不是 QrScan 尝试注册的那个，这项手测就成了假验证。
+      这个手法同时让 internal 的 User32 在本程序集内可见，
+      因此仓库不需要为它加 InternalsVisibleTo。
+    -->
+    <Compile Include="..\..\src\QrScan\Native\User32.cs" Link="User32.cs" />
+  </ItemGroup>
+
+</Project>

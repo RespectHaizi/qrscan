@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>ResultPresenterProbe</AssemblyName>
+    <RootNamespace>ResultPresenterProbe</RootNamespace>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!-- 只编 Program.cs 与下面显式 Link 的真实源文件，不参与默认通配 -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <!--
+      编入仓库里**真实的那两份**源文件（不是副本）。
+      用副本会随 src/ 的修改而漂移，探针就会开始验证一份不存在的代码。
+      这个手法同时让 internal 的 ResultPresenter / ToastWindow 在探针程序集内可见，
+      因此仓库不需要为探针加 InternalsVisibleTo。
+
+      ResultPresenter 会 new ToastWindow，所以后者也必须编进来 —— 否则探针会
+      链到 QrScan.exe 里那份 ToastWindow，而 ResultPresenter 的 _active 就变成了
+      另一个程序集的类型，反射读它的私有字段会失败。
+    -->
+    <Compile Include="..\..\src\QrScan\UI\ResultPresenter.cs" Link="ResultPresenter.cs" />
+    <Compile Include="..\..\src\QrScan\UI\ToastWindow.cs" Link="ToastWindow.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\QrScan.Core\QrScan.Core.csproj" />
+  </ItemGroup>
+
+</Project>

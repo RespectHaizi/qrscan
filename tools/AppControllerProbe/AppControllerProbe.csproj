@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>AppControllerProbe</AssemblyName>
+    <RootNamespace>AppControllerProbe</RootNamespace>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!-- 只编 Program.cs 与下面显式 Link 的真实源文件，不参与默认通配 -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <!--
+      编入仓库里**真实的**那几份源文件（不是副本）。
+      用副本会随 src/ 的修改而漂移，探针就会开始验证一份不存在的代码。
+
+      AppController 依赖的每一个具体类型都必须一起编进来，否则会出现
+      "同一个类型存在两个程序集副本" 的经典陷阱：AppController 方法签名里的
+      OverlayWindow 来自这里，而反射拿到的对象来自 QrScan.exe，于是
+      is 判定、字段读取全部静默失配。
+    -->
+    <Compile Include="..\..\src\QrScan\AppController.cs" Link="AppController.cs" />
+    <Compile Include="..\..\src\QrScan\UI\OverlayWindow.cs" Link="OverlayWindow.cs" />
+    <Compile Include="..\..\src\QrScan\UI\ToastWindow.cs" Link="ToastWindow.cs" />
+    <Compile Include="..\..\src\QrScan\UI\ResultPresenter.cs" Link="ResultPresenter.cs" />
+    <Compile Include="..\..\src\QrScan\UI\TrayHost.cs" Link="TrayHost.cs" />
+    <Compile Include="..\..\src\QrScan\Native\HotkeyManager.cs" Link="HotkeyManager.cs" />
+    <Compile Include="..\..\src\QrScan\Native\User32.cs" Link="User32.cs" />
+    <!--
+      HotkeyManager 依赖 QrScan.Core 的 HotkeySpec，而后者是 internal、
+      Core 的 InternalsVisibleTo 名单里只有 "QrScan" 与 "QrScan.Core.Tests"，
+      而**不允许修改 src/QrScan.Core/** 去补一条。
+      所以把那份**真实源码**一并编进探针（编译，不是修改 —— Core 一个字节都没动）。
+      它会在探针程序集内成为一份 internal 的 HotkeySpec；Core 自己那份仍然 internal、
+      对探针不可见，两者不会冲突。
+    -->
+    <Compile Include="..\..\src\QrScan.Core\HotkeySpec.cs" Link="HotkeySpec.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\QrScan.Core\QrScan.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 真实二维码样张（T1 生成、已在 UnitTests 里验证过解码结果） -->
+    <EmbeddedResource Include="..\..\tests\QrScan.Core.Tests\Assets\standard.png" />
+  </ItemGroup>
+
+</Project>
