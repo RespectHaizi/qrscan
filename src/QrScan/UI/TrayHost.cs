@@ -10,6 +10,7 @@ namespace QrScan.UI;
 public sealed class TrayHost : IDisposable
 {
     private readonly NotifyIcon _icon;
+    private readonly Icon _trayIcon;
     private readonly ContextMenuStrip _menu;
     private readonly ToolStripMenuItem _scanItem;
     private readonly ToolStripMenuItem _recentItem;
@@ -57,10 +58,11 @@ public sealed class TrayHost : IDisposable
             quitItem,
         });
 
+        _trayIcon = LoadTrayIcon();
         _icon = new NotifyIcon
         {
-            Icon = SystemIcons.Application,     // 占位图标；可替换为自定义 .ico
-            Text = "QrScan",                    // NotifyIcon.Text 上限 63 字符
+            Icon = _trayIcon,
+            Text = "QrScan",                    // NotifyIcon.Text upper limit: 63 chars
             Visible = true,
             ContextMenuStrip = _menu,
         };
@@ -127,7 +129,36 @@ public sealed class TrayHost : IDisposable
         //   要等鼠标划过才消失，用户点它毫无反应。
         _icon.Visible = false;
         _icon.Dispose();
+        _trayIcon.Dispose();
         _menu.Dispose();
+    }
+
+    /// <summary>
+    /// Loads the tray icon from the embedded resource, taking the frame that
+    /// matches the tray's actual size.
+    ///
+    /// The icon file is adaptive: at 16/20 it keeps only the scan frame and the
+    /// scan line (the QR modules, the cursor and the frame all smear together at
+    /// that size), at 24/32 it adds the three finder marks, and from 40 up it is
+    /// the original artwork. So the size must be requested explicitly instead of
+    /// loading a large frame and letting the shell scale it down.
+    /// </summary>
+    private static Icon LoadTrayIcon()
+    {
+        try
+        {
+            using var stream = typeof(TrayHost).Assembly
+                .GetManifestResourceStream("QrScan.Resources.qrscan-tray.ico");
+
+            if (stream is not null)
+                return new Icon(stream, SystemInformation.SmallIconSize);
+        }
+        catch (Exception ex) when (ex is ArgumentException or IOException)
+        {
+            // Missing or corrupt icon must not take the tray down
+        }
+
+        return SystemIcons.Application;
     }
 
     private ToolStripMenuItem BuildRecentEntry(QrPayload payload)

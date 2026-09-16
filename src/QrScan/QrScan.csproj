@@ -13,8 +13,14 @@
     <AssemblyName>QrScan</AssemblyName>
     <RootNamespace>QrScan</RootNamespace>
     <DebugType Condition="'$(Configuration)'=='Release'">none</DebugType>
+    <!-- exe / taskbar / Alt+Tab icon (adaptive: simplified at 16/20, fuller at 24/32, original at 40+) -->
+    <ApplicationIcon>Resources\qrscan.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\QrScan.Core\QrScan.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Small-size subset for the tray, so the full ico is not embedded twice -->
+    <EmbeddedResource Include="Resources\qrscan-tray.ico" LogicalName="QrScan.Resources.qrscan-tray.ico" />
   </ItemGroup>
 </Project>

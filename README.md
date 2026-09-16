@@ -1,3 +1,5 @@
+<img src="assets/icon.png" width="96" align="right" alt="QrScan icon">
+
 # QrScan
 
 Windows 轻量级常驻托盘的二维码扫码器。按全局快捷键呼出，框选屏幕上任意二维码 —— 网页、聊天窗口、图片都一视同仁 —— **自动复制到剪贴板**，并可一键打开。
