@@ -156,7 +156,7 @@ public class StartupManagerTests : IDisposable
     public void Current_exe_path_uses_ProcessPath_so_single_file_publish_works()
     {
         // 契约测试：锁住"返回进程可执行文件路径而非程序集路径"。
-        // 单文件发布下的端到端验证在任务 16 的手测第 11 项（用发布的 exe 跑）。
+        // 单文件发布下的端到端验证需用发布后的 exe 手工执行。
         // 单文件发布下 Assembly.Location 是空字符串，必须用 Environment.ProcessPath
         string path = StartupManager.CurrentExecutablePath();
         Assert.False(string.IsNullOrWhiteSpace(path));

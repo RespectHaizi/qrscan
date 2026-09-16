@@ -37,7 +37,7 @@ internal static class Program
     /// 断言总数闸门。
     ///
     /// 没有它，"删掉整整一节"这种破坏会让探针**变少但依然全绿**，而退出码 0。
-    /// 任务 11 与任务 12 的审查者都独立点出了这个缺陷，这里是第三次出现，所以从
+    /// 这个缺陷在本仓库的探针里反复出现过，所以从
     /// 一开始就带上。改断言数必须同时改这里 —— 那正是我们想要的那一次停顿。
     /// </summary>
     private const int ExpectedAssertions = 51;
@@ -560,7 +560,7 @@ internal static class Program
             catch (TargetInvocationException ex)
             {
                 // 把反射层的包装异常剥掉：包装异常是探针的伪影，内层才是产品异常。
-                // （任务 11 的探针最初把 TargetInvocationException 记成 PASS，
+                // （早前的探针曾把 TargetInvocationException 记成 PASS，
                 //   于是"取消路径通过"里混着"Close() 抛了异常"。）
                 unhandled ??= ex.InnerException ?? ex;
             }
@@ -716,7 +716,7 @@ internal static class Program
 
         using var stream = assembly.GetManifestResourceStream(resource)!;
         // 复制一份：流一关，GDI+ 对 stream-backed 位图的后续操作会抛 OutOfMemoryException
-        // （任务 1 踩过的坑），而这里之后还要在多个场景里反复 DrawImage 它。
+        // （早期踩过的坑），而这里之后还要在多个场景里反复 DrawImage 它。
         using var loaded = new Bitmap(stream);
         return new Bitmap(loaded);
     }

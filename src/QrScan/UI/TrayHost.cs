@@ -59,7 +59,7 @@ public sealed class TrayHost : IDisposable
 
         _icon = new NotifyIcon
         {
-            Icon = SystemIcons.Application,     // 占位图标；任务 16 可替换为自定义 .ico
+            Icon = SystemIcons.Application,     // 占位图标；可替换为自定义 .ico
             Text = "QrScan",                    // NotifyIcon.Text 上限 63 字符
             Visible = true,
             ContextMenuStrip = _menu,

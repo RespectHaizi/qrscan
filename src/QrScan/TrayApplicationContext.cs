@@ -43,7 +43,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
                 "启动项指向的路径与当前位置不一致，但无法重写注册表。请手动取消并重新勾选「开机自启」。");
 
         // 托盘"最近 N 条"点选 = 复制到剪贴板。走 ResultPresenter 的带重试实现
-        // （任务 9 留下的裸 Clipboard.SetDataObject 没有重试，失败会走到 WinForms
+        // （裸 Clipboard.SetDataObject 没有重试，失败会走到 WinForms
         // 默认的未处理异常对话框上）。
         // 失败必须可见 —— "绝不静默失败"是全局约束：静默失败会让用户以为复制成功了，
         // 然后粘贴出上一次的旧内容。
@@ -102,7 +102,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
             _tray.ShowBalloon("热键不可用", reason);
 
             // ★ 除托盘气泡之外**再**用自绘提示条显示一次。
-            //   任务 10 的审查者实测发现：Win11 下两条**内容不同**的气泡截图逐像素完全一致，
+            //   实测发现：Win11 下两条**内容不同**的气泡截图逐像素完全一致，
             //   强证据表明气泡正文可能根本没被渲染 —— 那样用户只会看到一个标题为 "QrScan"
             //   的空通知，而"热键注册失败必须对用户可见"正是本功能存在的全部意义。
             //   提示条是自绘文字，绕开整个系统通知栈（专注助手、通知开关、渲染差异）。

@@ -7,7 +7,7 @@ namespace QrScan.Core.Tests;
 /// 回归测试：TestAssets.Load 返回的位图必须与内嵌资源流解耦。
 /// System.Drawing.Bitmap(Stream) 的契约要求流在 Bitmap 生命周期内保持打开；
 /// 若 Load 在返回前释放了流，后续 Clone/Save 会抛出 GDI+ 的误导性
-/// OutOfMemoryException（真实含义是"状态非法"）。任务 3 的裁剪路径依赖 Clone。
+/// OutOfMemoryException（真实含义是"状态非法"）。解码器的裁剪路径依赖 Clone。
 /// </summary>
 public class TestAssetsTests
 {
