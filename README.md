@@ -169,7 +169,9 @@ bash tools/ToastWindowProbe/run-mutations.sh
 
 ## 许可
 
-尚未指定开源许可证。若需在他人项目中复用，请先联系作者。
+[MIT](LICENSE) © 2026 RespectHaizi
+
+二维码识别使用 [zxing-cpp](https://github.com/zxing-cpp/zxing-cpp)（Apache-2.0）。
 
 ---
 
